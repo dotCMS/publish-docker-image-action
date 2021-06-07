@@ -1,0 +1,35 @@
+name: 'Publish DotCMS docker image'
+description: 'Publishes DotCMS docker image (multi-arch by default) based on version provided'
+author: 'Victor Alfaro'
+inputs:
+  dot_cicd_branch:
+    description:  'Pipeline branch'
+    required: true
+    default: master
+  build_id:
+    description: 'DotCMS core branch/commit'
+    required: true
+    default: master
+  tags:
+    description: 'Space delimited tags to use when building and pushing'
+    required: true
+  multi_arch:
+    description: 'Build images in multi-arch mode'
+    required: true
+    default: 'true'
+  github_user_token:
+    description: 'Github user token configured for repo operations'
+    required: true
+  docker_hub_username:
+    description: 'Docker hub username'
+    required: true
+  docker_hub_token:
+    description: 'Docker hub token'
+    required: true
+  dry_run:
+    description: 'Run in dry-run mode'
+    required: false
+    default: 'false'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
