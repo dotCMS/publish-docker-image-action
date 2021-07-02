@@ -30,7 +30,7 @@ else
 fi
 
 # Creates and sets source folder
-src_folder=/build/src/
+src_folder=/build/src
 core_folder=${src_folder}/core
 mkdir -p ${src_folder}
 
