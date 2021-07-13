@@ -35,5 +35,6 @@ curl -fsSL \
 . /srv/publishDockerImage.sh
 
 result=$?
-echo "OJO:>> Result: ${result}"
 [[ ${result} != 0 ]] && exit 1
+
+exit 0
