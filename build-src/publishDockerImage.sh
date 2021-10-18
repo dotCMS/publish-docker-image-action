@@ -12,8 +12,8 @@ function decorateTags {
   local image_name=${2}
   local is_release=${3}
   local decorated=''
-  for tag in ${INPUT_TAGS}; do
-    decorated="${decorated} -t ${image_name}:${tag}"
+  for tag in ${INPUT_TAGS//\`}; do
+    decorated="${decorated} -t ${image_name}:${tag//}"
   done
   [[ "${is_release}" == 'true' ]] && decorated="${decorated} -t ${image_name}:latest"
   echo ${decorated}
