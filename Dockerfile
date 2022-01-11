@@ -1,4 +1,4 @@
-FROM docker:dind
+FROM docker:20.10.11-dind
 
 WORKDIR /srv
 
