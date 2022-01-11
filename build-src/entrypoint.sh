@@ -33,8 +33,3 @@ curl -fsSL \
 
 # Call man logic
 . /srv/publishDockerImage.sh
-
-result=$?
-[[ ${result} != 0 ]] && exit 1
-
-exit 0

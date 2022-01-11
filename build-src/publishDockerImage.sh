@@ -100,6 +100,7 @@ if [[ "${INPUT_MULTI_ARCH}" == 'true' ]]; then
     ."
   # Actual multi-arch build
   time executeCmd "${docker_build_cmd}"
+  [[ ${cmdResult} != 0 ]] && exit 1
 else
   docker_build_cmd="docker build
     --build-arg BUILD_FROM=COMMIT
@@ -108,9 +109,9 @@ else
     ."
   # Actual build
   time executeCmd "${docker_build_cmd}"
+  [[ ${cmdResult} != 0 ]] && exit 1
 
   # Actual push
   time executeCmd "docker push ${tags}"
+  [[ ${cmdResult} != 0 ]] && exit 1
 fi
-
-
