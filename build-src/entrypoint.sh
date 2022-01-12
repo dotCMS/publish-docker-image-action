@@ -33,3 +33,5 @@ curl -fsSL \
 
 # Call man logic
 . /srv/publishDockerImage.sh
+
+exit 0
