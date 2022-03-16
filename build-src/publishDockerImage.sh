@@ -25,7 +25,7 @@ echo 'Running dockerd magic to have a DIND image'
 dockerd-entrypoint.sh &
 sleep 20
 
-if [[ ${INPUT_BUILD_IS} =~ ^v[0-9]{2}.[0-9]{2}(.[0-9]{1,2})?$ ]]; then
+if [[ ${INPUT_BUILD_ID} =~ ^v[0-9]{2}.[0-9]{2}(.[0-9]{1,2})?$ ]]; then
   is_release=true
 else
   is_release=false
@@ -39,7 +39,9 @@ mkdir -p ${src_folder}
 # Configs git with default user
 gitConfig ${GITHUB_USER}
 # Clones core
+[[ "${is_release}" == 'true' ]] && export GIT_TAG=${build_id}
 gitClone $(resolveRepoUrl ${CORE_GITHUB_REPO} ${INPUT_GITHUB_USER_TOKEN} ${GITHUB_USER}) ${INPUT_BUILD_ID} ${core_folder}
+[[ "${is_release}" == 'true' ]] && export GIT_TAG=
 
 # Print docker version
 echo "Docker version" && docker --version
