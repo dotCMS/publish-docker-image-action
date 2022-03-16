@@ -53,16 +53,8 @@ echo ${INPUT_DOCKER_HUB_TOKEN} \
 
 # Git clones docker repo with provided branch
 core_docker_path=${core_folder}/docker/dotcms
-# Resolve which docker path to use (core or docker repo folder)
-resolved_docker_path=$(dockerPathWithFallback ${core_docker_path} docker)
 # Git clones docker repo with provided branch if
-if [[ "${resolved_docker_path}" == 'docker' ]]; then
-  docker_folder=${src_folder}/docker
-  fetchDocker ${docker_folder} master
-  pushd ${docker_folder}/images/dotcms
-else
-  pushd ${core_docker_path}
-fi
+pushd ${core_docker_path}
 
 docker_image_name=dotcms
 [[ "${INPUT_DRY_RUN}" == 'true' ]] && docker_image_name="${docker_image_name}-cicd-test"
