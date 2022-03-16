@@ -39,7 +39,7 @@ mkdir -p ${src_folder}
 # Configs git with default user
 gitConfig ${GITHUB_USER}
 # Clones core
-[[ "${is_release}" == 'true' ]] && export GIT_TAG=${build_id}
+[[ "${is_release}" == 'true' ]] && export GIT_TAG=${INPUT_BUILD_ID}
 gitClone $(resolveRepoUrl ${CORE_GITHUB_REPO} ${INPUT_GITHUB_USER_TOKEN} ${GITHUB_USER}) ${INPUT_BUILD_ID} ${core_folder}
 [[ "${is_release}" == 'true' ]] && export GIT_TAG=
 
