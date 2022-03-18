@@ -67,7 +67,7 @@ tag_params=$(decorateTags "${tags}" "${docker_image_full_name}" ${is_release})
 if [[ "${INPUT_MULTI_ARCH}" == 'true' ]]; then
   # Install Docker's buildx feature
   export DOCKER_BUILDKIT=1
-  docker build --platform=local -o . git://github.com/docker/buildx
+  docker build --platform=local -o . https://github.com/docker/buildx.git
   mkdir -p ~/.docker/cli-plugins
   mv buildx ~/.docker/cli-plugins/docker-buildx
 
