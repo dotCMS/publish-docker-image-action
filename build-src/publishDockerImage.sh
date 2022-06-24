@@ -17,7 +17,7 @@ function decorateTags {
     tag=${tag//,}
     decorated="${decorated} -t ${image_name}:${tag//}"
   done
-  [[ "${is_release}" == 'true' ]] && decorated="${decorated} -t ${image_name}:latest"
+  [[ "${is_release}" == 'true' ]] && decorated="${decorated}"
   echo ${decorated}
 }
 
@@ -37,9 +37,10 @@ core_folder=${src_folder}/core
 mkdir -p ${src_folder}
 
 # Configs git with default user
-gitConfig ${GITHUB_USER}
+executeCmd "gitConfig ${GITHUB_USER}"
 # Clones core
-[[ "${is_release}" == 'true' ]] && export GIT_TAG=${INPUT_BUILD_ID}
+build_from=COMMIT
+[[ "${is_release}" == 'true' ]] && export GIT_TAG=${INPUT_BUILD_ID} && build_from=TAG
 gitClone $(resolveRepoUrl ${CORE_GITHUB_REPO} ${INPUT_GITHUB_USER_TOKEN} ${GITHUB_USER}) ${INPUT_BUILD_ID} ${core_folder}
 [[ "${is_release}" == 'true' ]] && export GIT_TAG=
 
@@ -47,9 +48,7 @@ gitClone $(resolveRepoUrl ${CORE_GITHUB_REPO} ${INPUT_GITHUB_USER_TOKEN} ${GITHU
 echo "Docker version" && docker --version
 
 # Docker login
-echo "Executing: echo ${INPUT_DOCKER_HUB_TOKEN} | docker login --username ${INPUT_DOCKER_HUB_USERNAME} --password-stdin"
-echo ${INPUT_DOCKER_HUB_TOKEN} \
-  | docker login --username ${INPUT_DOCKER_HUB_USERNAME} --password-stdin
+executeCmd "echo ${INPUT_DOCKER_HUB_TOKEN} | docker login --username ${INPUT_DOCKER_HUB_USERNAME} --password-stdin"
 
 # Git clones docker repo with provided branch
 core_docker_path=${core_folder}/docker/dotcms
@@ -67,20 +66,19 @@ tag_params=$(decorateTags "${tags}" "${docker_image_full_name}" ${is_release})
 if [[ "${INPUT_MULTI_ARCH}" == 'true' ]]; then
   # Install Docker's buildx feature
   export DOCKER_BUILDKIT=1
-  docker build --platform=local -o . https://github.com/docker/buildx.git
-  mkdir -p ~/.docker/cli-plugins
-  mv buildx ~/.docker/cli-plugins/docker-buildx
+  executeCmd "docker build --platform=local -o . https://github.com/docker/buildx.git"
+  executeCmd "mkdir -p ~/.docker/cli-plugins"
+  executeCmd "mv buildx ~/.docker/cli-plugins/docker-buildx"
 
   # Prepare for building
   uname -sm
-  docker run --rm --privileged linuxkit/binfmt:v0.8
-  ls -1 /proc/sys/fs/binfmt_misc/qemu-*
+  executeCmd "docker run --rm --privileged linuxkit/binfmt:v0.8"
+  executeCmd "ls -1 /proc/sys/fs/binfmt_misc/qemu-*"
 
   # Create multi-arch
   echo 'Creating multi-arch Docker images'
-  echo 'Executing: docker buildx create --use --name multiarch'
-  docker buildx create --use --name multiarch
-  docker buildx inspect --bootstrap
+  executeCmd "docker buildx create --use --name multiarch"
+  executeCmd "docker buildx inspect --bootstrap"
 
   # Build docker build command
   docker_build_cmd="docker buildx build
@@ -88,7 +86,7 @@ if [[ "${INPUT_MULTI_ARCH}" == 'true' ]]; then
     --pull
     --push
     --no-cache
-    --build-arg BUILD_FROM=COMMIT
+    --build-arg BUILD_FROM=${build_from}
     --build-arg BUILD_ID=${INPUT_BUILD_ID}
     ${tag_params}
     ."
@@ -97,7 +95,7 @@ if [[ "${INPUT_MULTI_ARCH}" == 'true' ]]; then
   [[ ${cmdResult} != 0 ]] && exit 1
 else
   docker_build_cmd="docker build
-    --build-arg BUILD_FROM=COMMIT
+    --build-arg BUILD_FROM=${build_from}
     --build-arg BUILD_ID=${INPUT_BUILD_ID}
     ${tag_params}
     ."
