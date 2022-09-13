@@ -26,6 +26,8 @@ docker_hub_token: ${INPUT_DOCKER_HUB_TOKEN}
 dry_run: ${INPUT_DRY_RUN}
 "
 
+[[ -z "${INPUT_DOT_CICD_BRANCH}" ]] && INPUT_DOT_CICD_BRANCH=master
+
 # Fetches githubCommon.sh script with required variables and functions
 curl -fsSL \
   https://raw.githubusercontent.com/dotCMS/dot-cicd/${INPUT_DOT_CICD_BRANCH}/pipeline/github/githubCommon.sh \
