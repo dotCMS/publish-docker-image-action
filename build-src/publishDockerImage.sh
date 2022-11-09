@@ -41,7 +41,7 @@ executeCmd "gitConfig ${GITHUB_USER}"
 # Clones core
 build_from=COMMIT
 [[ "${is_release}" == 'true' ]] && export GIT_TAG=${INPUT_BUILD_ID} && build_from=TAG
-gitClone $(resolveRepoUrl ${CORE_GITHUB_REPO} ${INPUT_GITHUB_USER_TOKEN} ${GITHUB_USER}) ${INPUT_BUILD_ID} ${core_folder}
+gitCloneSubModules $(resolveRepoUrl ${CORE_GITHUB_REPO} ${INPUT_GITHUB_USER_TOKEN} ${GITHUB_USER}) ${INPUT_BUILD_ID} ${core_folder}
 [[ "${is_release}" == 'true' ]] && export GIT_TAG=
 
 # Print docker version
