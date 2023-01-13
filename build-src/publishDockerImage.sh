@@ -72,7 +72,7 @@ if [[ "${INPUT_MULTI_ARCH}" == 'true' ]]; then
 
   # Prepare for building
   uname -sm
-  executeCmd "docker run --rm --privileged linuxkit/binfmt:v0.8"
+  executeCmd "docker run --rm --privileged linuxkit/binfmt:v0.10.6"
   executeCmd "ls -1 /proc/sys/fs/binfmt_misc/qemu-*"
 
   # Create multi-arch
